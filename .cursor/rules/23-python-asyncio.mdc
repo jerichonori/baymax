@@ -1,0 +1,28 @@
+---
+description: "Asyncio: structured concurrency & cancellation hygiene."
+globs: ["backend/**.py", "workers/**.py"]
+alwaysApply: true
+---
+
+# Asyncio Rules
+
+**Rule 1 — Structured concurrency**
+
+- Use `asyncio.TaskGroup` instead of `create_task`/`gather` for related concurrent work.
+
+**Rule 2 — Timeouts are mandatory**
+
+- Wrap I/O with `asyncio.timeout(...)`. Prefer it over `wait_for`.
+- Choose explicit timeouts for external calls; no infinite waits.
+
+**Rule 3 — Don’t block the loop**
+
+- No `time.sleep()` or blocking I/O in coroutines. For unavoidable blocking calls, use `await asyncio.to_thread(...)`.
+
+**Rule 4 — Cancellation correctness**
+
+- If you catch `CancelledError`, do cleanup and **re-raise**. Don’t swallow cancellations.
+
+**Rule 5 — One session per task**
+
+- DB `AsyncSession` is **not** shared across tasks; create per-request/task. Same for other stateful clients unless explicitly documented as thread/async-safe.

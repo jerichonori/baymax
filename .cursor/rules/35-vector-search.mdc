@@ -1,0 +1,10 @@
+---
+description: pgvector in Postgres for embeddings
+globs: ["**/*vector*.py", "**/embeddings/**", "**/similarity/**"]
+alwaysApply: false
+---
+
+## Musts
+
+- Store embeddings in `vector` column; use HNSW or IVFFlat indexes when recall/latency requires; document tradeoffs.
+- Keep embedding dimensionality consistent with model; migrate with backfill if model changes.

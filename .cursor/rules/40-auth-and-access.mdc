@@ -1,0 +1,20 @@
+---
+description: Cognito auth + RBAC
+alwaysApply: true
+---
+
+## Musts
+
+- Service: AWS Cognito (User Pools; optional Hosted UI). Tokens only in secure, httpOnly cookies.
+- Patients: magic-link via SES (JWT), expiry 24h; no password.
+- Doctors: username/password + MFA (SMS or TOTP); session 8h; optional SAML SSO.
+- Admin: SSO required (SAML 2.0 via Okta/Azure AD), MFA enforced.
+- **Never** put JWTs in localStorage; use secure, httpOnly cookies.
+- Enforce **RBAC** at service boundaries; deny by default.
+
+## Implementation
+
+- Backend validates tokens with Cognito JWKS; cache JWKS with TTL; rotate automatically.
+- Session: short-lived cookies; refresh via Cognito refresh tokens on server-side only.
+- CSRF: protect state-changing routes (double-submit cookie or SameSite=strict + CSRF token).
+- Authorization: map Cognito groups/claims to internal roles; enforce per-route; audit auth events (no PHI).

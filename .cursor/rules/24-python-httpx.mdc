@@ -1,0 +1,28 @@
+---
+description: "HTTPX client usage: one client per app lifespan, timeouts, limits."
+globs: ["backend/**.py", "workers/**.py"]
+alwaysApply: true
+---
+
+# HTTPX Client Rules
+
+**Rule 1 — Single shared client**
+
+- Create one `httpx.AsyncClient` in FastAPI **lifespan**; store on `app.state.http`. Close on shutdown.
+
+**Rule 2 — Timeouts & limits**
+
+- Set explicit timeouts: `Timeout(connect=5, read=10, write=10, pool=5)`.
+- Configure pool limits: e.g., `Limits(max_connections=200, max_keepalive_connections=50, keepalive_expiry=10)`.
+
+**Rule 3 — HTTP/2 + TLS**
+
+- Enable `http2=True` when servers support it; keep TLS verification on (default).
+
+**Rule 4 — Errors**
+
+- Catch `httpx.*Error` at boundaries. Map to domain/HTTP errors with context; never leak PHI in error messages.
+
+**Rule 5 — Testing**
+
+- For async tests, use `httpx.ASGITransport(app=app)` + `AsyncClient` and `@pytest.mark.anyio`.

@@ -1,0 +1,19 @@
+---
+description: GitHub Actions gates + containers + deploys
+alwaysApply: true
+---
+
+## Pipeline (required order)
+
+1. Type checks (TS/Mypy)
+2. Lint/format (ESLint, Ruff/Black)
+3. Unit tests (Vitest/Pytest)
+4. Security scan (Snyk)
+5. Frontend build → S3; CloudFront invalidation
+6. Backend build → ECR; ECS Fargate deploy (rolling)
+7. Smoke checks via `/healthz`
+
+## Containers
+
+- Multi-stage builds, slim images; non-root user; no secrets in layers.
+- Uvicorn workers under Gunicorn for prod.

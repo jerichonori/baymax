@@ -1,0 +1,21 @@
+---
+description: Security musts (developer-facing)
+alwaysApply: true
+---
+
+## Musts
+
+- Validate all inputs at boundaries; reject by default.
+- Enforce authZ at service boundaries; least privilege everywhere.
+- No secrets in code, Docker images, or logs. Use env/secret managers.
+- Mitigate common classes: injection, broken access control, crypto failures.
+- Keep dependencies patched; fail CI on known critical vulns.
+
+## Do
+
+- Threat model material changes.
+- Log security-relevant events (structured logs).
+
+## Don’t
+
+- Don’t invent crypto; use vetted libs and modern TLS.

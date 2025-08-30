@@ -1,0 +1,30 @@
+---
+description: Observability standards (logging, metrics, tracing, errors)
+alwaysApply: true
+---
+
+## Logging
+
+- Structured JSON logs; no PHI. Correlation/request IDs on all entries. Levels: INFO business, WARN recoverable, ERROR failures.
+- Per-module loggers; include user/tenant identifiers only when appropriate and non-PHI.
+- Levels & context: DEBUG for dev only; INFO for business events; WARN for recoverables; ERROR for failures. Prefer key fields over free-form strings.
+- Exceptions: use exc_info=True on error logs; sanitize messages; avoid logging request bodies containing PHI.
+- Redaction: implement filters to drop/mask fields like name, dob, ssn, address, and free-text symptom narratives.
+- Scope: applies to `backend/**.py` and `workers/**.py`.
+- CloudWatch Logs 90d retention; ship to S3 after 30d for archive.
+
+## Metrics & APM
+
+- Datadog as primary APM; enable HIPAA mode & PII scrubbing. Emit custom business metrics (appointments, intake durations).
+
+## Tracing
+
+- AWS X-Ray enabled across services (FastAPI, workers). Propagate trace IDs via headers.
+
+## Error Tracking
+
+- Sentry (HIPAA tier) with default PII redaction; scrub request bodies and headers.
+
+## Dashboards & Alerts
+
+- Dashboards for latency, error rate, saturation, queue depth. Alerts with actionable thresholds; no noisy alerts.

@@ -1,0 +1,28 @@
+---
+description: "Pydantic v2: validation, serialization, and PHI safety."
+globs: ["backend/**.py", "workers/**.py"]
+alwaysApply: true
+---
+
+# Pydantic v2 Rules
+
+**Rule 1 — Models & config**
+
+- Use Pydantic v2 `BaseModel`. Prefer `ConfigDict` via `model_config` for behavior (e.g., `from_attributes=True`, `str_max_length`, etc.).
+
+**Rule 2 — Validation**
+
+- Use `@field_validator` (before/after) for custom checks. Use `Annotated[...]` when you want reusable validators.
+
+**Rule 3 — Serialization**
+
+- Use `.model_dump()` / `.model_dump_json()` (not `.dict()`/`.json()`).
+- Exclude secrets and PHI by default at dump time; use `SecretStr/SecretBytes` for sensitive fields.
+
+**Rule 4 — Settings**
+
+- Centralize runtime configuration with Pydantic Settings; no direct `os.environ` lookups outside settings modules.
+
+**Rule 5 — mypy plugin**
+
+- Enable the Pydantic mypy plugin for better type checking of models.

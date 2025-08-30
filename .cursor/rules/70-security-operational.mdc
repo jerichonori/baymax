@@ -1,0 +1,12 @@
+---
+description: Practical security defaults for this repo
+alwaysApply: true
+---
+
+## Musts
+
+- Secrets: AWS Secrets Manager; never in code or Docker layers.
+- TLS everywhere; KMS‑encrypted data at rest; S3 buckets private with least-privilege.
+- WAF: Cloudflare (edge) + AWS WAF (origin). Shield Std enabled.
+- Dependencies: `poetry export --without dev` and `pnpm --frozen-lockfile` in CI; block on Snyk criticals.
+- Audit logging for access/changes to PHI; 6‑year retention policy (provider guidance).

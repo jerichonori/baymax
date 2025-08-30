@@ -1,0 +1,15 @@
+---
+description: DynamoDB patterns for conversations, sessions, audit logs
+globs: ["**/dynamo/**", "**/*dynamodb*.py", "**/*dynamo*.ts"]
+alwaysApply: false
+---
+
+## Musts
+
+- **TTL** for `sessions` (24h) and `conversations` (90d). Use epoch‑seconds attributes; filter expired on reads.
+- GSIs per table design; prefer sparse indexes for queues/status.
+- Streams → Lambda → S3 for `audit_logs` archive.
+
+## Don’t
+
+- Don’t do cross‑partition scans for hot paths; model access patterns first.

@@ -1,0 +1,19 @@
+---
+description: "Workers: Celery (SQS) + APScheduler. Idempotency, timeouts, acknowledgements."
+globs: ["workers/**.py", "backend/**/tasks/**.py"]
+alwaysApply: true
+---
+
+# Worker Rules
+
+**Celery (SQS)**
+
+- Tasks **must be idempotent**; include idempotency keys in payload where possible.
+- Acks: set `task_acks_late=True`; for redelivery on failure/timeouts set `task_acks_on_failure_or_timeout=False`.
+- SQS `visibility_timeout` > worst-case task time (add buffer). Configure via `broker_transport_options`.
+- Handle retries explicitly; backoff + max attempts. Log structured task result (no PHI).
+
+**APScheduler**
+
+- Use `AsyncIOScheduler` inside the app event loop for lightweight, in-process schedules (e.g., cleanup, health checks).
+- Offload **heavy** or long-running jobs to Celery, not APScheduler.

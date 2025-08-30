@@ -1,0 +1,18 @@
+---
+description: TypeScript rules (strict mode assumed)
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: false
+---
+
+## Musts
+
+- Named exports; no default exports.
+- Prefer `unknown` over `any`; narrow with type guards.
+- Public APIs: explicit return types; internal implementations may rely on inference.
+- Use discriminated unions for variant state.
+- Prefer `value == null` for nullish checks; use `??` for defaults.
+- Keep functions focused; avoid > ~20 lines unless clarity requires.
+
+## Enforcement
+
+- Align with `eslint.config.*` and `tsconfig.*`. Do not restate linter options here; reference them.

@@ -1,0 +1,29 @@
+---
+description: Messaging, queues, pub/sub, and events
+alwaysApply: true
+---
+
+## Queues (SQS)
+
+- Use FIFO queues where ordering/idempotency matters (e.g., `intake-processing`).
+- Configure `visibility_timeout` > worst-case task time; DLQ for poison messages.
+- Payloads must include idempotency keys; tasks must be safe to re-run.
+
+## Pub/Sub (SNS)
+
+- Topics for broadcast (e.g., `appointment-reminders`, `system-alerts`).
+- Use message attributes for routing; subscribe SQS or Lambda.
+
+## Event Bus (EventBridge)
+
+- System integration events and workflow orchestration; schema registry enabled.
+- Use detail-type and source conventions; lightweight payloads with identifiers.
+
+## Workers & Scheduling
+
+- Celery over SQS for async jobs; backoff retries with caps; structured logs (no PHI).
+- APScheduler only for lightweight in-process tasks; offload heavy work to Celery.
+
+## External Comms
+
+- Email via SES; SMS via Twilio (BAA); Push via Pinpoint. Respect user prefs and rate limits.

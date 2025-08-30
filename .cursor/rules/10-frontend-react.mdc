@@ -1,0 +1,26 @@
+---
+description: React 18 + TS 5 standards for Patient Portal & Doctor Dashboard
+globs: ["**/*.ts", "**/*.tsx"]
+alwaysApply: false
+---
+
+## Musts
+
+- **State**: Local first; **Zustand** for app state; **TanStack Query v5** for server state. Derive data; avoid mirrors.
+- **Forms**: React Hook Form + **Zod resolver**; type-safe schemas shared with backend types where feasible.
+- **Routing**: React Router v6; no dynamic string paths scattered around—centralize route constants.
+- **Performance**: Memoize expensive calcs; stabilize callbacks when passing deep; avoid re-renders in lists.
+- **A11y**: Semantic elements; keyboard reachable; ARIA sparingly and correctly.
+- **Charts**: Recharts for common, D3 for custom; keep render cost bounded.
+
+## Do
+
+- Co-locate component tests; test behavior (RTL).
+- Use `queryClient.invalidateQueries()` on write flows that modify server data.
+
+## Don’t
+
+- Don’t put server cache in Zustand; let Query own it.
+- Don’t build custom form validation when Zod covers it.
+
+Links: /docs/frontend.md (design system: shadcn/ui + Mantine)

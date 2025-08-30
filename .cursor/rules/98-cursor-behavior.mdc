@@ -1,0 +1,9 @@
+---
+description: How the AI should behave in this repo
+alwaysApply: false
+---
+
+- Align with existing patterns & these rules; **never** invent endpoints or env vars.
+- If context is missing, ask for @rule file by name (e.g., @30-database-postgres).
+- Proposals must include: rationale (1 paragraph), tests impact, and any migration steps.
+- When AI output touches PHI, cite @00-critical-policies and @60-ai-usage-and-phi.

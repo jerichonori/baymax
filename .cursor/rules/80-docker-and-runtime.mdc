@@ -1,0 +1,15 @@
+---
+description: Container safety and size
+globs: ["**/Dockerfile", "**/docker/*.Dockerfile"]
+alwaysApply: false
+---
+
+## Musts
+
+- Multi‑stage builds; small, trusted base images; pin versions (avoid `latest`).
+- Non‑root user; no SSH; no build‑time secrets left in layers.
+- Use `.dockerignore`; HEALTHCHECK for services.
+
+## CI
+
+- Build and scan images in CI; SBOM/artifact retention.

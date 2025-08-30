@@ -1,0 +1,17 @@
+---
+description: FastAPI 0.109+, Python 3.11+, Pydantic v2, Uvicorn/Gunicorn
+globs: ["backend/**", "server/**", "app/**"]
+alwaysApply: false
+---
+
+## Musts
+
+- **App layout**: `app/main.py`, routers under `app/api`, models under `app/models`, schemas under `app/schemas`.
+- **Validation**: Pydantic v2 models at API boundaries only; internal domain uses dataclasses or typed dicts as needed.
+- **Concurrency**: httpx async client as singleton; timeouts required; circuit-breakers for external calls.
+- **Errors**: Unified error envelope with `trace_id`; map exceptions centrally.
+- **Docs**: Leave FastAPI auto docs enabled (`/docs`, `/redoc`).
+
+## Realtime
+
+- Use **FastAPI WebSockets** for live queue/notifications; **do not** use `BackgroundTasks` for long‑running websocket jobs—use asyncio tasks or offload to Celery.

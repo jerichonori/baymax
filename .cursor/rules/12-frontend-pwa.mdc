@@ -1,0 +1,21 @@
+---
+description: PWA (Workbox) for offline-ready Patient Portal
+globs:
+  [
+    "**/service-worker.{ts,js}",
+    "**/sw.{ts,js}",
+    "vite.config.*",
+    "public/manifest*.json",
+  ]
+alwaysApply: false
+---
+
+## Musts
+
+- Use **Workbox** precaching for hashed static assets; choose `generateSW` or `injectManifest`.
+- Cache strategy: static assets = `CacheFirst`; API = `NetworkFirst` with short timeout; **never cache** auth endpoints.
+- Precache manifest MUST include `index.html` handling to ensure offline boot (or explicitly route it `NetworkFirst`).
+
+## Notes
+
+- Vite build emits content-hashed assets; ensure Workbox integration consumes the manifest.

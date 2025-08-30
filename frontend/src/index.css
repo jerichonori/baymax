@@ -1,0 +1,43 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+
+/* Base layout */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply antialiased bg-white text-gray-900;
+}
+
+a {
+  @apply underline-offset-2 hover:underline;
+}
+
+/* Container utility */
+.page-container {
+  @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+/* Voice equalizer animation */
+@keyframes eq-bounce {
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.eq-bar {
+  width: 4px;
+  height: 1rem;
+  border-radius: 9999px;
+  background-color: currentColor;
+  transform-origin: bottom;
+  animation: eq-bounce 1s ease-in-out infinite;
+}

@@ -1,0 +1,28 @@
+---
+description: Cost optimization guidelines
+alwaysApply: true
+---
+
+## Databases
+
+- Aurora Serverless v2 with autoscaling; RDS Proxy to reduce connections.
+- DynamoDB On-Demand for unpredictable load; TTL cleanup for `sessions` and `conversations`.
+
+## Storage & Logs
+
+- S3 Intelligent-Tiering; move CloudWatch Logs to S3 after 30 days.
+
+## Compute & Network
+
+- ECS Fargate Spot for dev/staging; autoscaling policies for prod.
+- Single NAT in dev/staging; HA NAT in prod only.
+
+## AI Costs
+
+- Cache deterministic prompts; batch embeddings; rate-limit OpenAI usage.
+- Prefer de-identified text with provenance; consider Bedrock fallbacks when cheaper.
+
+## Deploy Hygiene
+
+- Delete unused images in ECR; lifecycle policies.
+- Scheduled cleanups for stale data where compliant.

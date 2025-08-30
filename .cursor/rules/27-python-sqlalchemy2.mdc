@@ -1,0 +1,21 @@
+---
+description: "SQLAlchemy 2.0+: typed ORM, async sessions, and safe patterns."
+globs: ["backend/**.py"]
+alwaysApply: true
+---
+
+# SQLAlchemy 2.0 Rules
+
+**Rule 1 — Modern declarative + typing**
+
+- Use `DeclarativeBase`, `Mapped[T]`, and `mapped_column(...)`. Define indexes/constraints via `__table_args__`.
+
+**Rule 2 — Async engine & sessions**
+
+- Use `create_async_engine()` with `asyncpg`. Create `async_sessionmaker(engine, expire_on_commit=False)`.
+- **Per-request/task session** via FastAPI dependency:
+  ```py
+  async def get_session():
+      async with async_session() as s:
+          yield s
+  ```

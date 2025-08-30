@@ -1,0 +1,14 @@
+---
+description: Using OpenAI, Bedrock, Comprehend Medical safely with PHI
+alwaysApply: true
+---
+
+## Musts
+
+- **PHI → OpenAI** only if BAA signed; otherwise pass **de-identified** text (Safe Harbor: remove 18 identifiers) and track provenance.
+- Prefer **Comprehend Medical** for entity extraction when PHI present (HIPAA-eligible); Whisper/Polly usage must follow HIPAA-eligible service policies.
+- **Cost controls**: rate limit and batch for embeddings; cache deterministic prompts; measure tokens per feature.
+
+## Don’t
+
+- Don’t store raw prompts/responses with PHI; store identifiers + encrypted payloads only when required.

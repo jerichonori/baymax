@@ -1,0 +1,42 @@
+---
+description: "Python 3.11 style & typing: keep it simple, explicit, and safe."
+globs: ["backend/**.py", "workers/**.py", "scripts/**.py"]
+alwaysApply: true
+---
+
+# Python Style & Typing (3.11+)
+
+**Rule 1 — Formatting is non-negotiable**
+
+- Format with **Black** (line length 100).
+- Lint with **Ruff**; let Ruff auto-fix safe issues; don’t enable ruff-format (we use Black).
+
+**Rule 2 — Type all public surfaces**
+
+- All public funcs/methods/classes: full type hints.
+- Use `typing.Self` for fluent APIs; prefer `Literal`, `Annotated`, and `TypedDict`/`dataclass` where helpful.
+- Avoid `Any`. If you must, constrain it narrowly and add a TODO.
+
+**Rule 3 — Exceptions**
+
+- Validate early; raise precise exceptions (`ValueError`, `HTTPException`, or a project-specific `AppError`).
+- Always `raise ... from err` to preserve cause.
+
+**Rule 4 — Docstrings**
+
+- PEP 257: One-sentence summary line, then details if needed. Document the _why_ for non-obvious logic.
+
+**Rule 5 — Security by default**
+
+- **Never** use `eval`/`exec` on untrusted input.
+- **Never** unpickle untrusted data. Prefer JSON / msgpack / your own schema.
+- Treat any PHI as sensitive—do not log it; mask or drop.
+
+**Rule 6 — Imports and modules**
+
+- Absolute imports; standard lib → third-party → local, separated by blank lines.
+- No wildcard imports; keep module scope small.
+
+**Rule 7 — Constants & config**
+
+- Put constants in `settings.py` (Pydantic Settings) or env; no secrets in code.

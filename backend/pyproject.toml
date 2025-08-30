@@ -1,0 +1,172 @@
+[tool.poetry]
+name = "baymax-backend"
+version = "0.1.0"
+description = "AI-powered patient intake and lightweight EMR system for Indian healthcare"
+authors = ["Baymax Team"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.109.0"
+uvicorn = {extras = ["standard"], version = "^0.27.0"}
+pydantic = "^2.5.0"
+pydantic-settings = "^2.1.0"
+sqlalchemy = "^2.0.0"
+alembic = "^1.13.0"
+asyncpg = "^0.29.0"
+psycopg2-binary = "^2.9.9"
+httpx = "^0.26.0"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-multipart = "^0.0.6"
+email-validator = "^2.1.0"
+boto3 = "^1.34.0"
+redis = "^5.0.0"
+celery = {extras = ["redis"], version = "^5.3.0"}
+openai = "^1.10.0"
+langchain = "^0.1.0"
+langchain-openai = "^0.0.5"
+websockets = "^12.0"
+aiofiles = "^23.2.1"
+python-dateutil = "^2.8.2"
+pytz = "^2024.1"
+tenacity = "^8.2.3"
+structlog = "^24.1.0"
+sentry-sdk = {extras = ["fastapi"], version = "^1.40.0"}
+prometheus-fastapi-instrumentator = "^6.1.0"
+cryptography = "^42.0.0"
+pycryptodome = "^3.20.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.0"
+pytest-cov = "^4.1.0"
+pytest-mock = "^3.12.0"
+pytest-env = "^1.1.0"
+httpx = "^0.26.0"
+factory-boy = "^3.3.0"
+faker = "^22.0.0"
+black = "^24.1.0"
+ruff = "^0.1.0"
+mypy = "^1.8.0"
+types-python-dateutil = "^2.8.0"
+types-pytz = "^2024.1.0"
+types-redis = "^4.6.0"
+types-passlib = "^1.7.0"
+rich = "^13.7.0"
+watchdog = "^3.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  migrations
+  | alembic
+)/
+'''
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501", # line too long
+    "B008", # do not perform function calls in argument defaults
+    "C901", # too complex
+    "W191", # indentation contains tabs
+]
+exclude = [
+    ".git",
+    "__pycache__",
+    "migrations",
+    "alembic",
+    ".venv",
+    "venv",
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_any_unimported = false
+no_implicit_optional = true
+check_untyped_defs = true
+warn_no_return = true
+warn_unreachable = true
+strict_optional = true
+
+[[tool.mypy.overrides]]
+module = [
+    "celery.*",
+    "redis.*",
+    "boto3.*",
+    "botocore.*",
+    "passlib.*",
+    "jose.*",
+    "websockets.*",
+    "langchain.*",
+    "openai.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--tb=short",
+    "--strict-markers",
+    "--disable-warnings",
+    "-ra",
+    "--cov=app",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+    "--cov-fail-under=80",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+source = ["app"]
+omit = [
+    "*/tests/*",
+    "*/migrations/*",
+    "*/__init__.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]

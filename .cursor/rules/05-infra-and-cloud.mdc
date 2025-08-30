@@ -1,0 +1,47 @@
+---
+description: AWS infrastructure & hosting (HIPAA)
+alwaysApply: true
+---
+
+## Cloud & Regions
+
+- Provider: AWS; primary `us-east-1`, DR `us-west-2`.
+- HIPAA BAA in place; all services and configs must be HIPAA-eligible.
+
+## Architecture
+
+- Frontend: S3 (private) + CloudFront; no Vercel/Netlify.
+- Backend: ECS Fargate behind ALB; API Gateway only if explicitly required for edge auth.
+- DNS/WAF: Cloudflare (free) + AWS WAF; Route 53 authoritative DNS.
+- Registry: ECR; Images built via GitHub Actions.
+
+## IaC
+
+- Terraform for baseline; CDK optional for higher-level constructs.
+- State stored remotely with locking; plan/apply gated in CI.
+
+## Networking
+
+- VPC with private subnets for ECS tasks and RDS; public subnets for ALB/CloudFront origins only.
+- NAT: single for dev/staging; HA for prod. Restrict egress by SG where feasible.
+- Security groups least-privilege; no 0.0.0.0/0 to databases.
+
+## Data Stores
+
+- Postgres: Aurora Serverless v2 (15), RDS Proxy, pgvector. Automated backups on; multi-AZ.
+- DynamoDB: On-demand capacity; TTL for `sessions` (24h) and `conversations` (90d). Streams → archive.
+
+## Secrets & Config
+
+- AWS Secrets Manager for credentials/keys; Parameter Store for non-secret config.
+- No secrets in code, images, or logs. Rotate keys at least quarterly.
+
+## Compliance
+
+- Encrypt at rest with KMS CMKs; TLS 1.2+ in transit. S3 buckets private with least-privilege.
+- Audit logs retained 6 years (provider guidance). Avoid PHI in logs by default.
+
+## Deploy
+
+- Frontend: Vite build → S3 → CloudFront invalidation.
+- Backend: Build → ECR → ECS rolling deploy. Health checks via `/healthz`.

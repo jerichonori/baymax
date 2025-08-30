@@ -1,0 +1,43 @@
+---
+description: REST conventions + error envelope + OpenAPI
+globs:
+  [
+    "**/api/**",
+    "**/*router*.py",
+    "**/*schema*.py",
+    "**/*openapi*.yml",
+    "**/*openapi*.yaml",
+    "**/*openapi*.json",
+  ]
+alwaysApply: false
+---
+
+## Musts
+
+- Versioned base path (`/v1`); no breaking changes without new version.
+- Error envelope: `{ code, message, details?, trace_id }`
+- Keep **OpenAPI** in repo; CI validates and checks for breaking changes.
+
+## Conventions
+
+- HTTP semantics respected (GET safe/idempotent; POST create; PUT/PATCH update; DELETE remove).
+- Pagination: `page` + `page_size` (max reasonable cap); responses include `total`, `page`, `page_size`.
+- Filtering/sorting via explicit query params; document each in OpenAPI.
+- IDs: UUID v4 unless domain requires alternative.
+- Timestamps: ISO-8601 UTC (`Z`).
+
+## Errors
+
+- Standard envelope example:
+  {
+  "code": "validation_error",
+  "message": "Invalid field",
+  "details": { "field": "email" },
+  "trace_id": "..."
+  }
+- Never leak PHI in error messages; map internal exceptions centrally.
+
+## OpenAPI
+
+- Single source of truth; generated or hand-authored is fine, but commit to repo.
+- CI gate: schema lint + breaking-change detection. Docs available at `/docs` and `/redoc`.

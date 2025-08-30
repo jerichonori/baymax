@@ -1,0 +1,28 @@
+---
+description: Authoritative commands; do not invent
+alwaysApply: true
+---
+
+# Package/Tooling
+
+- JS manager: **pnpm**
+- Python manager: **Poetry**
+
+# Frontend
+
+- Dev: `pnpm dev` (Vite)
+- Build: `pnpm build` (Vite prod build for S3/CloudFront)
+- Test: `pnpm test` (Vitest)
+- Lint/Format: `pnpm lint` / `pnpm format`
+
+# Backend
+
+- Dev: `poetry run uvicorn app.main:app --reload --port 8000`
+- Type check: `poetry run mypy`
+- Lint/Format: `poetry run ruff check` / `poetry run black .`
+- Test: `poetry run pytest -q`
+
+# Deploy (GitHub Actions)
+
+- Build & push ECR → ECS Fargate (backend)
+- Upload S3 assets + CloudFront invalidation (frontend)

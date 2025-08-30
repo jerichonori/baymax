@@ -1,0 +1,17 @@
+---
+description: Aurora PostgreSQL Serverless v2 (15) + SQLAlchemy 2.0 + Alembic
+globs:
+  ["**/migrations/**", "**/alembic/**", "**/models/**", "**/*sqlalchemy*.py"]
+alwaysApply: false
+---
+
+## Musts
+
+- **SQLAlchemy 2.0** style (typed ORM); session per-request; scoped cleanup.
+- Use **RDS Proxy** endpoint from env for connection pooling.
+- Indices on query hot paths (icd10, patient_id, appointment_id).
+- **Migrations**: Alembic autogenerate with manual review; never alter without migration.
+
+## Serverless
+
+- Assume ACU scaling; design for **connection efficiency** (short‑lived transactions); avoid chatty patterns.

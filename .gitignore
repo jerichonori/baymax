@@ -1,0 +1,301 @@
+# =============================================================================
+# BAYMAX AI PATIENT INTAKE EMR - .gitignore
+# =============================================================================
+# This file excludes build artifacts, dependencies, logs, secrets, and 
+# temporary files from version control for a full-stack healthcare application.
+
+# =============================================================================
+# ENVIRONMENT & SECRETS
+# =============================================================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# AWS credentials and config
+.aws/
+aws-config.json
+credentials.json
+
+# Healthcare/PHI related secrets
+patient-data/
+phi-exports/
+medical-records/
+*.hipaa
+
+# =============================================================================
+# NODE.JS & FRONTEND (React + Vite + pnpm)
+# =============================================================================
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Cache directories
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+
+# Runtime logs
+*.log
+logs/
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# =============================================================================
+# PYTHON & BACKEND (FastAPI + Poetry)
+# =============================================================================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv/
+.env/
+poetry.lock
+Pipfile.lock
+
+# Poetry specific
+poetry.toml
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Database
+*.db
+*.sqlite3
+*.sqlite
+instance/
+migrations/versions/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# =============================================================================
+# DATABASES & INFRASTRUCTURE
+# =============================================================================
+# Local database files
+*.sqlite
+*.sqlite3
+*.db
+
+# PostgreSQL
+postgresql-data/
+pgdata/
+
+# Redis dumps
+dump.rdb
+
+# Docker volumes
+docker-data/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+terraform.tfvars
+terraform.tfvars.json
+
+# AWS CDK
+cdk.out/
+cdk.context.json
+
+# =============================================================================
+# AI/ML & HEALTHCARE SPECIFIC
+# =============================================================================
+# Model files and weights
+*.pkl
+*.joblib
+*.h5
+*.hdf5
+*.onnx
+models/
+checkpoints/
+
+# Vector databases
+*.faiss
+*.index
+chroma-db/
+pinecone-data/
+
+# Medical imaging (if any)
+*.dcm
+*.dicom
+medical-images/
+
+# Audio files from voice intake
+recordings/
+*.wav
+*.mp3
+*.m4a
+audio-cache/
+
+# Language models cache
+.langchain/
+.openai-cache/
+
+# =============================================================================
+# DEVELOPMENT TOOLS & IDEs
+# =============================================================================
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+
+*.swp
+*.swo
+*~
+
+# =============================================================================
+# OPERATING SYSTEM
+# =============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# =============================================================================
+# TESTING & CI/CD
+# =============================================================================
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/
+.playwright-mcp/
+
+# Test artifacts
+screenshots/
+test-output/
+e2e-results/
+
+# GitHub Actions
+.github/workflows/secrets/
+
+# =============================================================================
+# TEMPORARY & BACKUP FILES
+# =============================================================================
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.orig
+.temp/
+temp/
+
+# Log files
+*.log
+*.log.*
+logs/
+
+# Lock files (except package manager locks we want to track)
+*.lock
+!package-lock.json
+!pnpm-lock.yaml
+!Pipfile.lock
+
+# =============================================================================
+# DEPLOYMENT & PRODUCTION
+# =============================================================================
+# Docker
+.dockerignore
+
+# Kubernetes
+k8s-secrets/
+*.yaml.local
+
+# SSL certificates
+ssl/
+certs/
+
+# Backup files
+backups/
+*.sql.gz
+*.dump

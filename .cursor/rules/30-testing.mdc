@@ -1,0 +1,18 @@
+---
+description: Testing strategy
+alwaysApply: true
+---
+
+## What to test
+
+- Follow the Test Pyramid: many fast unit tests, fewer integration, very few critical E2E.
+- Each PR MUST add/adjust tests for changed behavior.
+
+## Flakiness
+
+- No blind retries. Quarantine, fix root cause (timing, race, network), or delete and replace.
+- Prefer deterministic tests; mock external services.
+
+## Coverage
+
+- New/changed code: require meaningful assertions; coverage is a signal, not a target.

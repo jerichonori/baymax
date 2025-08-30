@@ -1,0 +1,23 @@
+---
+description: "Testing: pytest + anyio/pytest-asyncio for async + httpx ASGI transport."
+globs: ["tests/**.py"]
+alwaysApply: true
+---
+
+# Testing Rules
+
+**Rule 1 — Async tests**
+
+- Mark async tests with `@pytest.mark.anyio`. Use `httpx.AsyncClient(transport=ASGITransport(app=app), base_url='http://test')`.
+
+**Rule 2 — Fixtures**
+
+- Provide fixtures for `app`, `db_session` (transactional, rolled back per test), and `client`.
+
+**Rule 3 — Determinism**
+
+- No sleeps in tests. Use timeouts and await actual completion signals. Seed randomness.
+
+**Rule 4 — PHI**
+
+- Use synthetic/faker data; never real PHI in tests. Mask any patient-like data in snapshots/logs.
