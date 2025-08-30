@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import App from "./App.tsx";
+import LandingPage from "./pages/Landing.tsx";
 import HomePage from "./pages/Home.tsx";
 import IntakePage from "./pages/Intake.tsx";
 import DoctorDashboardPage from "./pages/DoctorDashboard.tsx";
@@ -16,7 +17,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { index: true, element: <HomePage /> },
+      { index: true, element: <LandingPage /> },
       { path: "intake", element: <IntakePage /> },
       { path: "doctor", element: <DoctorDashboardPage /> },
       { path: "doctor/:encounterId", element: <EncounterDetailPage /> },
