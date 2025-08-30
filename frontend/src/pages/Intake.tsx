@@ -9,6 +9,7 @@ import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import { Button } from "../components/ui/button";
 import { SegmentedToggle } from "../components/ui/segmented-toggle";
+import { AudioVisualizer, CircularAudioVisualizer, WaveformVisualizer } from "../components/AudioVisualizer";
 
 type Message = {
   id: string;
@@ -39,6 +40,7 @@ export default function IntakePage() {
   const [viewMode, setViewMode] = useState<"voice" | "text">("voice");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [showComposerFade, setShowComposerFade] = useState(false);
+  const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
 
   function autoResize() {
     const el = textareaRef.current;
@@ -60,6 +62,7 @@ export default function IntakePage() {
   async function startRecording() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      setAudioStream(stream);
       const mr = new MediaRecorder(stream);
       const chunks: BlobPart[] = [];
       mr.ondataavailable = (e) => {
@@ -70,6 +73,7 @@ export default function IntakePage() {
         const fakeTranscript = "I have knee pain";
         handleTranscript(fakeTranscript);
         stream.getTracks().forEach((t) => t.stop());
+        setAudioStream(null);
       };
       mediaRecorderRef.current = mr;
       mr.start();
@@ -167,7 +171,7 @@ export default function IntakePage() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="h-9 w-9"
+                    className="h-9 w-9 relative z-10"
                     aria-hidden
                   >
                     <path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3" />
@@ -175,35 +179,14 @@ export default function IntakePage() {
                     <path d="M12 19v3" />
                     <path d="M8 22h8" />
                   </svg>
-                  {isRecording && (
-                    <span className="absolute -inset-2 rounded-2xl ring-2 ring-rose-400/50 animate-pulse" />
-                  )}
+                  <div className="absolute -inset-4">
+                    <CircularAudioVisualizer isRecording={isRecording} stream={audioStream} />
+                  </div>
                 </button>
 
-                {isRecording && (
-                  <div className="flex items-end gap-1 text-blue-700">
-                    <span
-                      className="eq-bar"
-                      style={{ animationDelay: "0ms" }}
-                    />
-                    <span
-                      className="eq-bar"
-                      style={{ animationDelay: "120ms" }}
-                    />
-                    <span
-                      className="eq-bar"
-                      style={{ animationDelay: "240ms" }}
-                    />
-                    <span
-                      className="eq-bar"
-                      style={{ animationDelay: "360ms" }}
-                    />
-                    <span
-                      className="eq-bar"
-                      style={{ animationDelay: "480ms" }}
-                    />
-                  </div>
-                )}
+                <div className="w-64">
+                  <AudioVisualizer isRecording={isRecording} stream={audioStream} />
+                </div>
 
                 {recordError && (
                   <div className="text-xs text-red-600">{recordError}</div>

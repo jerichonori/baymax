@@ -41,3 +41,34 @@ a {
   transform-origin: bottom;
   animation: eq-bounce 1s ease-in-out infinite;
 }
+
+/* Audio visualizer pulse animation */
+@keyframes audio-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 20px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.audio-pulse {
+  animation: audio-pulse 1.5s infinite;
+}
+
+/* Smooth glow effect */
+@keyframes audio-glow {
+  0%, 100% {
+    filter: brightness(1) drop-shadow(0 0 10px rgba(59, 130, 246, 0.5));
+  }
+  50% {
+    filter: brightness(1.1) drop-shadow(0 0 20px rgba(59, 130, 246, 0.8));
+  }
+}
+
+.audio-glow {
+  animation: audio-glow 2s ease-in-out infinite;
+}
