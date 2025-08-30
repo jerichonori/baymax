@@ -31,7 +31,7 @@ export function SegmentedToggle<T extends string>({
             role="tab"
             aria-selected={isActive}
             className={cn(
-              "relative rounded-lg px-3 py-1.5 transition-colors",
+              "relative flex-1 sm:flex-initial rounded-lg px-2 sm:px-3 py-1.5 transition-colors whitespace-nowrap",
               isActive
                 ? "bg-gradient-to-br from-blue-600/90 to-indigo-600/90 text-white shadow-md"
                 : "text-gray-700 hover:bg-white/40 hover:text-gray-900"
