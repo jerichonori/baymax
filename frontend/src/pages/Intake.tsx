@@ -156,7 +156,7 @@ export default function IntakePage() {
                   onClick={() =>
                     isRecording ? stopRecording() : startRecording()
                   }
-                  className={`relative grid h-28 w-28 place-items-center rounded-2xl shadow-md transition ${
+                  className={`relative grid h-40 w-40 place-items-center rounded-full shadow-lg transition ${
                     isRecording
                       ? "bg-gradient-to-br from-rose-600 to-red-600 text-white hover:brightness-110"
                       : "bg-white/70 text-blue-700 ring-1 ring-black/5 backdrop-blur hover:bg-white/80"
@@ -171,7 +171,7 @@ export default function IntakePage() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="h-9 w-9 relative z-10"
+                    className="h-12 w-12 relative z-10"
                     aria-hidden
                   >
                     <path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3" />
@@ -179,7 +179,7 @@ export default function IntakePage() {
                     <path d="M12 19v3" />
                     <path d="M8 22h8" />
                   </svg>
-                  <div className="absolute -inset-4">
+                  <div className="absolute -inset-6">
                     <CircularAudioVisualizer isRecording={isRecording} stream={audioStream} />
                   </div>
                 </button>
@@ -210,8 +210,8 @@ export default function IntakePage() {
                     <div
                       className={
                         m.role === "user"
-                          ? "inline-block rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 px-3 py-2 text-white shadow max-w-[85%] sm:max-w-[75%] md:max-w-[65%] break-words overflow-wrap-anywhere"
-                          : "inline-block rounded-2xl bg-white/80 backdrop-blur px-3 py-2 text-gray-900 shadow ring-1 ring-black/5 max-w-[85%] sm:max-w-[75%] md:max-w-[65%] break-words overflow-wrap-anywhere"
+                          ? "inline-block rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-600 px-4 py-2.5 text-white shadow max-w-[85%] sm:max-w-[75%] md:max-w-[65%] break-words overflow-wrap-anywhere"
+                          : "inline-block rounded-3xl bg-white/80 backdrop-blur px-4 py-2.5 text-gray-900 shadow ring-1 ring-black/5 max-w-[85%] sm:max-w-[75%] md:max-w-[65%] break-words overflow-wrap-anywhere"
                       }
                     >
                       <p className="text-sm leading-relaxed whitespace-pre-wrap break-words overflow-wrap-anywhere word-break-break-all text-left">
@@ -240,7 +240,7 @@ export default function IntakePage() {
                     type="button"
                     onClick={send}
                     disabled={!input.trim()}
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-sm transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-sm transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
                     aria-label="Send message"
                   >
                     <svg
