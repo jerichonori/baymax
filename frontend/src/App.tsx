@@ -3,7 +3,7 @@ import { Link, NavLink, Outlet } from "react-router-dom";
 function App() {
   return (
     <div className="min-h-screen flex flex-col bg-[radial-gradient(90%_60%_at_10%_-10%,#eef2ff,transparent),radial-gradient(80%_50%_at_90%_-10%,#f1f5f9,transparent)]">
-      <header className="sticky top-0 z-30 bg-transparent">
+      <header className="bg-transparent">
         <div className="page-container h-16 flex items-center justify-center">
           <div className="mx-auto grid h-12 w-full max-w-4xl grid-cols-3 items-center rounded-full bg-white/70 px-3 shadow-md ring-1 ring-black/5 backdrop-blur supports-[backdrop-filter]:bg-white/60">
             {/* Left: Logo */}
