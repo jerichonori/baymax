@@ -1,15 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
+import { motion, AnimatePresence } from "framer-motion";
+import { Card, CardContent } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
-import { Button } from "../components/ui/button";
+// import { Button } from "../components/ui/button";
 import { SegmentedToggle } from "../components/ui/segmented-toggle";
-import { AudioVisualizer, CircularAudioVisualizer, WaveformVisualizer } from "../components/AudioVisualizer";
+import {
+  AudioVisualizer,
+  CircularAudioVisualizer,
+} from "../components/AudioVisualizer";
 
 type Message = {
   id: string;
@@ -19,6 +18,31 @@ type Message = {
 };
 
 // language auto-detect is handled heuristically from content (stub)
+
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
+    setMatches(mq.matches);
+    try {
+      mq.addEventListener("change", handler);
+    } catch (_err) {
+      // Safari fallback
+      // @ts-ignore
+      mq.addListener(handler);
+    }
+    return () => {
+      try {
+        mq.removeEventListener("change", handler);
+      } catch (_err) {
+        // @ts-ignore
+        mq.removeListener(handler);
+      }
+    };
+  }, [query]);
+  return matches;
+}
 
 export default function IntakePage() {
   const [detectedLang, setDetectedLang] = useState("en");
@@ -41,6 +65,10 @@ export default function IntakePage() {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [showComposerFade, setShowComposerFade] = useState(false);
   const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
+  const isNarrow = useMediaQuery("(max-width: 420px)");
+  const placeholderText = isNarrow
+    ? "Your concern…"
+    : "Describe your health concerns…";
 
   function autoResize() {
     const el = textareaRef.current;
@@ -57,7 +85,7 @@ export default function IntakePage() {
   useEffect(() => {
     autoResize();
   }, [input]);
-  const [showTranscript, setShowTranscript] = useState(false);
+  // const [showTranscript, setShowTranscript] = useState(false);
 
   async function startRecording() {
     try {
@@ -117,11 +145,18 @@ export default function IntakePage() {
   }
 
   return (
-    <section className="grid gap-6">
-      <div className="space-y-6">
+    <div className="h-[calc(100dvh-152px)] min-h-0">
+      <motion.div
+        className="h-full min-h-0 flex flex-col mx-auto px-3 sm:px-4"
+        animate={{
+          maxWidth:
+            viewMode === "voice" ? "min(1024px, 100vw)" : "min(1400px, 100vw)",
+        }}
+        transition={{ duration: 0.5, ease: "easeInOut" }}
+      >
         {/* External controls bar */}
-        <div className="flex items-center justify-end gap-2">
-          <label className="inline-flex cursor-pointer items-center gap-1 rounded-md bg-white/70 px-2.5 py-1.5 text-xs text-gray-700 shadow-sm ring-1 ring-black/5 backdrop-blur transition hover:bg-white/90">
+        <div className="flex w-full items-center justify-between gap-3 sm:gap-4 mb-3 sm:mb-4 flex-shrink-0">
+          <label className="inline-flex cursor-pointer items-center gap-1.5 sm:gap-2 rounded-xl bg-white/70 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-medium text-gray-700 shadow-sm backdrop-blur transition hover:bg-white/80 hover:shadow-md">
             <Input type="file" className="hidden" />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -131,11 +166,12 @@ export default function IntakePage() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="h-3.5 w-3.5"
+              className="h-3.5 w-3.5 sm:h-4 sm:w-4"
             >
               <path d="M21.44 11.05l-9.19 9.19a6 6 0 1 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66L9.88 16.75a2 2 0 1 1-2.83-2.83l8.49-8.49" />
             </svg>
-            <span>Attach</span>
+            <span className="hidden xs:inline sm:inline">Attach Files</span>
+            <span className="xs:hidden sm:hidden">Attach</span>
           </label>
           <SegmentedToggle<"voice" | "text">
             options={[
@@ -147,122 +183,195 @@ export default function IntakePage() {
           />
         </div>
 
-        {viewMode === "voice" ? (
-          <Card>
-            <CardContent className="grid min-h-[70vh] place-items-center py-6">
-              <div className="flex flex-col items-center gap-6">
-                <button
-                  type="button"
-                  onClick={() =>
-                    isRecording ? stopRecording() : startRecording()
-                  }
-                  className={`relative grid h-40 w-40 place-items-center rounded-full shadow-lg transition ${
-                    isRecording
-                      ? "bg-gradient-to-br from-rose-600 to-red-600 text-white hover:brightness-110"
-                      : "bg-white/70 text-blue-700 ring-1 ring-black/5 backdrop-blur hover:bg-white/80"
-                  }`}
-                  aria-pressed={isRecording}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-12 w-12 relative z-10"
-                    aria-hidden
-                  >
-                    <path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3" />
-                    <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                    <path d="M12 19v3" />
-                    <path d="M8 22h8" />
-                  </svg>
-                  <div className="absolute -inset-6">
-                    <CircularAudioVisualizer isRecording={isRecording} stream={audioStream} />
-                  </div>
-                </button>
+        <AnimatePresence mode="wait">
+          {viewMode === "voice" ? (
+            <motion.div
+              key="voice"
+              className="relative flex-1 min-h-0"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Card className="border-0 shadow-xl bg-white/30 backdrop-blur-xl h-full">
+                <CardContent className="grid h-full place-items-center py-6 sm:py-10">
+                  <div className="flex flex-col items-center gap-6 sm:gap-8">
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          isRecording ? stopRecording() : startRecording()
+                        }
+                        className={`relative grid h-[clamp(84px,16vmin,176px)] w-[clamp(84px,16vmin,176px)] place-items-center rounded-full shadow-2xl transition-all duration-300 transform ${
+                          isRecording
+                            ? "bg-gradient-to-br from-rose-500 to-red-600 text-white scale-105 hover:scale-110"
+                            : "bg-white/90 text-blue-600 hover:bg-white hover:scale-105 hover:shadow-xl"
+                        }`}
+                        aria-pressed={isRecording}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-12 w-12 sm:h-14 sm:w-14 relative z-10"
+                          aria-hidden
+                        >
+                          <path d="M12 3a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3" />
+                          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                          <path d="M12 19v3" />
+                          <path d="M8 22h8" />
+                        </svg>
+                        <div className="absolute -inset-6 sm:-inset-8">
+                          <CircularAudioVisualizer
+                            isRecording={isRecording}
+                            stream={audioStream}
+                          />
+                        </div>
+                      </button>
 
-                <div className="w-64">
-                  <AudioVisualizer isRecording={isRecording} stream={audioStream} />
-                </div>
+                      {/* Ambient glow */}
+                      {isRecording && (
+                        <div className="absolute inset-0 rounded-full bg-red-400/20 animate-ping pointer-events-none" />
+                      )}
+                    </div>
 
-                {recordError && (
-                  <div className="text-xs text-red-600">{recordError}</div>
-                )}
+                    <div className="w-[clamp(160px,36vmin,288px)]">
+                      <AudioVisualizer
+                        isRecording={isRecording}
+                        stream={audioStream}
+                      />
+                    </div>
 
-                <div className="text-xs text-gray-600">
-                  {isRecording ? "Listening…" : "Tap to start speaking"}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card>
-            <CardContent className="flex h-[70vh] flex-col gap-3">
-              <div className="flex-1 min-h-0 space-y-2 overflow-auto p-3">
-                {messages.map((m) => (
-                  <div
-                    key={m.id}
-                    className={m.role === "user" ? "text-right" : "text-left"}
-                  >
+                    {recordError && (
+                      <div className="flex items-center gap-2 bg-red-50 text-red-700 px-4 py-2 rounded-xl text-sm">
+                        <svg
+                          className="h-4 w-4"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        {recordError}
+                      </div>
+                    )}
+
                     <div
-                      className={
-                        m.role === "user"
-                          ? "inline-block rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-600 px-4 py-2.5 text-white shadow max-w-[85%] sm:max-w-[75%] md:max-w-[65%] break-words overflow-wrap-anywhere"
-                          : "inline-block rounded-3xl bg-white/80 backdrop-blur px-4 py-2.5 text-gray-900 shadow ring-1 ring-black/5 max-w-[85%] sm:max-w-[75%] md:max-w-[65%] break-words overflow-wrap-anywhere"
-                      }
+                      className={`text-center transition-all duration-300 ${
+                        isRecording ? "text-gray-700" : "text-gray-500"
+                      }`}
                     >
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap break-words overflow-wrap-anywhere word-break-break-all text-left">
-                        {m.content}
-                      </p>
+                      <div
+                        className={`text-sm sm:text-base font-medium mb-1 ${
+                          isRecording ? "text-red-600" : "text-gray-700"
+                        }`}
+                      >
+                        {isRecording ? "Listening..." : "Ready to listen"}
+                      </div>
+                      <div className="text-xs sm:text-sm px-4 max-[700px]:hidden">
+                        {isRecording
+                          ? "Speak naturally about your health concerns"
+                          : "Tap the microphone to start"}
+                      </div>
                     </div>
                   </div>
-                ))}
-              </div>
-              <div className="grid gap-2 pt-3">
-                <div className="flex items-end gap-2">
-                  <div className="relative flex-1">
-                    <Textarea
-                      ref={textareaRef}
-                      rows={1}
-                      placeholder="Type your message..."
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      onInput={autoResize}
-                    />
-                    {showComposerFade && (
-                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-6 rounded-b-md bg-gradient-to-t from-white/60 to-transparent" />
-                    )}
+                </CardContent>
+              </Card>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="text"
+              className="relative flex-1 min-h-0"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Card className="border-0 shadow-xl bg-white/30 backdrop-blur-xl h-full">
+                <CardContent className="flex h-full flex-col gap-4">
+                  <div className="flex-1 min-h-0 overflow-y-auto space-y-4 px-2 pb-2">
+                    <AnimatePresence>
+                      {messages.map((m, index) => (
+                        <motion.div
+                          key={m.id}
+                          className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{
+                            duration: 0.3,
+                            delay: index * 0.05,
+                            type: "spring",
+                            stiffness: 400,
+                            damping: 25,
+                          }}
+                        >
+                          <div
+                            className={
+                              m.role === "user"
+                                ? "inline-block rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-white shadow-md max-w-[85%] sm:max-w-[75%] md:max-w-[65%] break-words overflow-wrap-anywhere"
+                                : "inline-block rounded-3xl bg-white/80 backdrop-blur-sm px-5 py-3 text-gray-900 shadow-md max-w-[85%] sm:max-w-[75%] md:max-w-[65%] break-words overflow-wrap-anywhere"
+                            }
+                          >
+                            <p className="text-xs sm:text-sm leading-relaxed whitespace-pre-wrap break-words overflow-wrap-anywhere text-left">
+                              {m.content}
+                            </p>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </AnimatePresence>
                   </div>
-                  <button
-                    type="button"
-                    onClick={send}
-                    disabled={!input.trim()}
-                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-sm transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                    aria-label="Send message"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-4 w-4"
-                    >
-                      <path d="M22 2L11 13" />
-                      <path d="M22 2l-7 20-4-9-9-4 20-7z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-      </div>
-    </section>
+                  <div className="flex-shrink-0">
+                    <div className="flex items-end gap-3">
+                      <div className="relative flex-1">
+                        <Textarea
+                          ref={textareaRef}
+                          rows={1}
+                          placeholder={placeholderText}
+                          value={input}
+                          onChange={(e) => setInput(e.target.value)}
+                          onInput={autoResize}
+                          className="border-0 ring-1 ring-white/40 bg-white/80 backdrop-blur-sm shadow-md focus-visible:ring-blue-500/50 transition-all duration-200 rounded-2xl resize-none"
+                        />
+                        {showComposerFade && (
+                          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-6 rounded-b-2xl bg-gradient-to-t from-white/90 to-transparent" />
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={send}
+                        disabled={!input.trim()}
+                        className="grid h-10 w-10 sm:h-11 sm:w-11 shrink-0 place-items-center rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg transition-all duration-200 hover:scale-105 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
+                        aria-label="Send message"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="h-4 w-4 sm:h-5 sm:w-5"
+                        >
+                          <path d="M22 2L11 13" />
+                          <path d="M22 2l-7 20-4-9-9-4 20-7z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </div>
   );
 }
